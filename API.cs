@@ -42,14 +42,11 @@ internal class MashapeAPI : IJSONAPI {
     public string ToJSON(Object o){
         return JsonConvert.SerializeObject(o);
     }
-
-    
-
 }
 
 internal class GoogleAPI : IJSONAPI {
     public string urlFormat(string term, string key) =>
-        $"https://maps.googleapis.com/maps/api/geocode/json?address={term}&key={key}";
+        $"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&type=restaurant&{term}=cruise&key={key}";
 
     public async Task<string> GetJSON(string term, string key){
         var http = new HttpClient();
@@ -57,8 +54,8 @@ internal class GoogleAPI : IJSONAPI {
         return result;
     }
 
-    public async Task<T> GetData<T>(string term, string key){
-        string json = await GetJSON(term, key);
+    public async Task<T> GetData<T>(string hitGoogleWith, string Googlekey){
+        string json = await GetJSON(hitGoogleWith, Googlekey);
         T instance = JsonConvert.DeserializeObject<T>(json);
         return instance;
     }
