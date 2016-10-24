@@ -93,7 +93,8 @@ public class Prompter{
             //Directory.CreateDirectory("csv");
             
             if(term == "" || term == "n") {
-                string hitGoogleWith = Search.mostCommonSearch(searchTerms);                 //mostCommonSearch(searchTerms);
+                string hitGoogleWith = Search.mostCommonSearch(searchTerms); 
+                Console.WriteLine("most common search term:"+ hitGoogleWith);                //mostCommonSearch(searchTerms);
                 googler.promptGoogle(hitGoogleWith).Wait();
                 Environment.Exit(0);
             } else if (n.hits.Count() > 0){
