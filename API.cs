@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 using System.Net.Http;
 
 internal interface IJSONAPI {
-    Task<string> GetJSON(string term, string key);
-    Task<T> GetData<T>(string term, string key);
+    Task<string> GetJSON(string term, string key, string latlng);
+    Task<T> GetData<T>(string term, string key, string latlng);
     string ToJSON(Object o);
-}
-internal interface IJSONAPI2 {
-    Task<string> GetJSON2(string LatLng, string term, string key);
-    Task<T> GetData2<T>(string LatLng, string term, string key);
-    string ToJSON2(Object o);
 }
 
 internal class MashapeAPI : IJSONAPI {
@@ -29,7 +24,7 @@ internal class MashapeAPI : IJSONAPI {
     public string urlFormat(string term) =>
         $"https://nutritionix-api.p.mashape.com/v1_1/search/{term}?fields={String.Join(",", fields)}";
 
-    public async Task<string> GetJSON(string term, string key){
+    public async Task<string> GetJSON(string term, string key, string latlng = ""){
         var http = new HttpClient();
         var request = new HttpRequestMessage(HttpMethod.Get, urlFormat(term));
         request.Headers.Add("X-Mashape-Key", key);
@@ -38,7 +33,7 @@ internal class MashapeAPI : IJSONAPI {
         return result;
     }
 
-    public async Task<T> GetData<T>(string term, string key){
+    public async Task<T> GetData<T>(string term, string key, string latlng = ""){
         string json = await GetJSON(term, key);
         T instance = JsonConvert.DeserializeObject<T>(json);
         return instance;
@@ -49,23 +44,24 @@ internal class MashapeAPI : IJSONAPI {
     }
 }
 
-internal class GoogleAPI : IJSONAPI2 {
-    public string urlFormat(string LatLng, string term, string key) =>
-        $"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={LatLng}&radius=500&type=restaurant&{term}=cruise&key={key}";
+internal class GooglePlacesAPI : IJSONAPI {
+    public string urlFormat(string term, string key, string LatLng) =>
+        $"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={LatLng}&radius=5000&type=restaurant&keyword={term}&key={key}";
 
-    public async Task<string> GetJSON2(string LatLng, string term, string key){
+    public async Task<string> GetJSON(string term, string key, string LatLng = ""){
         var http = new HttpClient();
-        var result = await http.GetStringAsync(urlFormat(LatLng, term, key));
+        // Console.WriteLine(urlFormat(LatLng, term, key));
+        var result = await http.GetStringAsync(urlFormat(term, key, LatLng));
         return result;
     }
 
-    public async Task<T> GetData2<T>(string LatLng, string hitGoogleWith, string Googlekey){
-        string json = await GetJSON2(LatLng, hitGoogleWith, Googlekey);
+    public async Task<T> GetData<T>(string term, string key, string LatLng = ""){
+        string json = await GetJSON(term, key, LatLng);
         T instance = JsonConvert.DeserializeObject<T>(json);
         return instance;
     }
 
-    public string ToJSON2(Object o){
+    public string ToJSON(Object o){
         return JsonConvert.SerializeObject(o);
     }   
 }
