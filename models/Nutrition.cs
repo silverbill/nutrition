@@ -75,31 +75,35 @@ public class Prompter{
 
     }
     public static async Task prompt()
-        {
+        {   Console.WriteLine("Enter your zipcode");
+            string input = Console.ReadLine();
+            string result = await getUrl("https://maps.googleapis.com/maps/api/geocode/json?address="+input+
+            "=AIzaSyC_33A_wFm7dUaMlpwiUy_5huiuJ7XAkYs");
+            Google g = JsonConvert.DeserializeObject<Google>(result);
+            double lat = g.results.ElementAt(0).geometry.location.lat;
+            double lng = g.results.ElementAt(0).geometry.location.lng;
+            
+            String LatLng = (lat.ToString()+","+lng.ToString());
             Console.WriteLine(@"
-            Hey! Listen!
-            
+            Howdy, fatso!!  
             --------
-            
             Enter a food or beverage to get caloric info:
 
 
             ");
+            
             string term = Console.ReadLine();
             IJSONAPI mashapi = new MashapeAPI();
-            var apiKey = "8H6stHhT25mshXH1okEaCywiRiCUp1DYIsxjsnyespJHYCy7ca";        
-            Nutrition n = await mashapi.GetData<Nutrition>(term,apiKey);
-            
-            //Directory.CreateDirectory("csv");
+            var nutrixapiKey = "8H6stHhT25mshXH1okEaCywiRiCUp1DYIsxjsnyespJHYCy7ca";        
+            Nutrition n = await mashapi.GetData<Nutrition>(term,nutrixapiKey);
             
             if(term == "" || term == "n") {
                 string hitGoogleWith = Search.mostCommonSearch(searchTerms); 
                 Console.WriteLine("most common search term:"+ hitGoogleWith);                //mostCommonSearch(searchTerms);
-                googler.promptGoogle(hitGoogleWith).Wait();
+                googler.promptGoogle(LatLng, hitGoogleWith).Wait();
                 Environment.Exit(0);
             } else if (n.hits.Count() > 0){
                 searchTerms.Add(term);
-                //searchTerms.
                 string item = n.hits.ElementAt(0).fields.item_name;
                 double? calories = n.hits.ElementAt(0).fields.nf_calories ?? 0;
                 double? fatGrams = n.hits.ElementAt(0).fields.nf_total_fat ?? 0;            
@@ -108,10 +112,6 @@ public class Prompter{
                 string stickem = (item + calories.ToString() + fatGrams.ToString());
                 List<string> list1 = new List<string>();
                 list1.Add(item);list1.Add(calories.ToString());list1.Add(fatGrams.ToString());
-                
-                
-                
-                
                 
                 if (!File.Exists(@"csv/nutrix.csv"))
                     {
@@ -123,7 +123,13 @@ public class Prompter{
                     }           
                 
                 prompt().Wait();                     
-        } 
+        }
+        public static async Task<string> getUrl(string url){
+            var http = new HttpClient();
+            string reply = await http.GetStringAsync(url);
+            return reply;
+
+        }
 
 
 

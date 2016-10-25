@@ -79,15 +79,16 @@ public class Google
   public class googler {
       string name;
       string apiCalls;
+      string LatLng;
      
       public googler(){
 
       }
      
-    public static async Task promptGoogle(string hitGoogleWith){
-        IJSONAPI googapi = new GoogleAPI();  
+    public static async Task promptGoogle(string LatLng, string hitGoogleWith){
+        IJSONAPI2 googapi = new GoogleAPI();  
         string Googlekey = "AIzaSyAfdlKioHIQ6X06IfAoNa22KtU1t35Xd_A"; 
-        Google g = await googapi.GetData<Google>(hitGoogleWith, Googlekey);
+        Google g = await googapi.GetData2<Google>(LatLng, hitGoogleWith, Googlekey);
         Console.WriteLine($"Here's a location nearby that serves your favorite search term: {g.results.ElementAt(3).name}");
         
         //Console.WriteLine(googapi.ToJSON(g)); 

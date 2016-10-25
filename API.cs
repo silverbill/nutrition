@@ -10,6 +10,11 @@ internal interface IJSONAPI {
     Task<T> GetData<T>(string term, string key);
     string ToJSON(Object o);
 }
+internal interface IJSONAPI2 {
+    Task<string> GetJSON2(string LatLng, string term, string key);
+    Task<T> GetData2<T>(string LatLng, string term, string key);
+    string ToJSON2(Object o);
+}
 
 internal class MashapeAPI : IJSONAPI {
 
@@ -44,30 +49,23 @@ internal class MashapeAPI : IJSONAPI {
     }
 }
 
-internal class GoogleAPI : IJSONAPI {
-    public string urlFormat(string term, string key) =>
-        $"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&type=restaurant&{term}=cruise&key={key}";
+internal class GoogleAPI : IJSONAPI2 {
+    public string urlFormat(string LatLng, string term, string key) =>
+        $"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={LatLng}&radius=500&type=restaurant&{term}=cruise&key={key}";
 
-    public async Task<string> GetJSON(string term, string key){
+    public async Task<string> GetJSON2(string LatLng, string term, string key){
         var http = new HttpClient();
-        var result = await http.GetStringAsync(urlFormat(term, key));
+        var result = await http.GetStringAsync(urlFormat(LatLng, term, key));
         return result;
     }
 
-    public async Task<T> GetData<T>(string hitGoogleWith, string Googlekey){
-        string json = await GetJSON(hitGoogleWith, Googlekey);
+    public async Task<T> GetData2<T>(string LatLng, string hitGoogleWith, string Googlekey){
+        string json = await GetJSON2(LatLng, hitGoogleWith, Googlekey);
         T instance = JsonConvert.DeserializeObject<T>(json);
         return instance;
     }
 
-    public string ToJSON(Object o){
+    public string ToJSON2(Object o){
         return JsonConvert.SerializeObject(o);
-    }
-
-    
-
-    
-
-    // Close the stream:
-   
+    }   
 }
