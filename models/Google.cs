@@ -54,7 +54,7 @@ public class Google
         IJSONAPI googapi = new GooglePlacesAPI();  
         
         Google place = await googapi.GetData<Google>(hitGoogleWith, Googlekey, LatLng);
-        Console.WriteLine($"Here's a location nearby that serves your favorite search term:");
+        Console.WriteLine($"Here's a location nearby that serves your favorite search term: {LatLng}");
         // Console.WriteLine(googapi.ToJSON(place));
         if(place.results.Count > 0){
             Console.WriteLine(place.results[0].name);

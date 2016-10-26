@@ -50,7 +50,6 @@ internal class GooglePlacesAPI : IJSONAPI {
 
     public async Task<string> GetJSON(string term, string key, string LatLng = ""){
         var http = new HttpClient();
-        // Console.WriteLine(urlFormat(LatLng, term, key));
         var result = await http.GetStringAsync(urlFormat(term, key, LatLng));
         return result;
     }

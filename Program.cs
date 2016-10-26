@@ -14,10 +14,9 @@ public class Program
     public static void Main(string[] args)   
     {
         Prompter.prompt().Wait();
-        //googler.promptGoogle().Wait();
     }
  public static Prompter prompter = new Prompter();
- public static googler g1 = new googler();   
+ //public static googler g1 = new googler();   
 }
 
    
