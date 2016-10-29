@@ -66,7 +66,7 @@ public class Search {
     //     return mostCommonString;
     // }
 }   
-public class Prompter {
+public class Prompter {                                     //moved the whole prompter methode into new propmter class 
     string name;
     string apiCalls;
     // List <string> searchTerms;
